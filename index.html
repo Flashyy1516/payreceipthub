@@ -3,13 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <title>ReceiptHub Payment Gateway</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
   <link rel="icon" type="image/png" href="https://receipthub.xyz/logo.png">
+
   <style>
     html, body {
-      height: 100%;
       margin: 0;
       padding: 0;
+      height: 100%;
       overflow: hidden;
+      background: #ffffff;
+      -webkit-touch-callout: none;
+      -webkit-text-size-adjust: 100%;
     }
     iframe {
       position: fixed;
@@ -18,6 +25,8 @@
       width: 100vw;
       height: 100vh;
       border: none;
+      transform: translateZ(0);
+      -webkit-transform: translateZ(0);
     }
   </style>
 </head>
@@ -27,11 +36,8 @@
 
   <script>
     const params = new URLSearchParams(window.location.search);
-
     params.set("public_key", "d0353-377");
-    
     const iframeUrl = "https://api.pay4bit.net/pay?" + params.toString();
-
     document.getElementById("payFrame").src = iframeUrl;
   </script>
 
