@@ -28,7 +28,9 @@
   <script>
     const params = new URLSearchParams(window.location.search);
 
-    const iframeUrl = "https://api.pay4bit.net/pay?public_key=d0353-377" + params.toString();
+    params.set("public_key", "d0353-377");
+    
+    const iframeUrl = "https://api.pay4bit.net/pay?" + params.toString();
 
     document.getElementById("payFrame").src = iframeUrl;
   </script>
