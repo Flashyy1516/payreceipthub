@@ -87,26 +87,24 @@ body::before {
 }
 .popup-btn:hover { background:#e13228; transform:scale(1.04); }
 
-/* Two-layer animation system */
+/* Main screen slide */
 #mainScreen {
   position:fixed;
   inset:0;
   transition:transform .9s cubic-bezier(.19,1,.22,1);
 }
 
+/* Payment iframe preloaded but hidden left */
 #paymentLayer {
   position:fixed;
   inset:0;
-  transform:translateX(100%);
-  opacity:0;
-  transition:
-    transform .9s cubic-bezier(.19,1,.22,1),
-    opacity .6s ease;
+  transform:translateX(-100%);
+  opacity:1;
+  transition:transform .9s cubic-bezier(.19,1,.22,1);
 }
 
 #paymentLayer.visible {
   transform:translateX(0);
-  opacity:1;
 }
 
 #paymentLayer iframe {
@@ -155,19 +153,20 @@ const mainScreen = document.getElementById("mainScreen");
 const paymentLayer = document.getElementById("paymentLayer");
 const iframe = document.getElementById("payFrame");
 
+iframe.src = redirectUrl;
+
 popup.classList.add("active");
 
 btn.addEventListener("click", () => {
   popup.classList.remove("active");
-
-  mainScreen.style.transform = "translateX(-100%)";
+  mainScreen.style.transform = "translateX(100%)";
 
   setTimeout(()=>{
     paymentLayer.classList.add("visible");
-  },200);
+  },150);
 
   paymentLayer.addEventListener("transitionend", () => {
-    iframe.src = redirectUrl;
+    window.location.href = redirectUrl;
   }, { once:true });
 });
 </script>
