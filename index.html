@@ -87,36 +87,29 @@ body::before {
 }
 .popup-btn:hover { background:#e13228; transform:scale(1.04); }
 
-#screenWrapper {
+/* Two-layer animation system */
+#mainScreen {
   position:fixed;
   inset:0;
-  display:flex;
-  width:100%;
-  height:100%;
-  overflow:hidden;
-  transform:translateX(0);
   transition:transform .9s cubic-bezier(.19,1,.22,1);
 }
 
-#originalScreen {
-  flex:1;
-  position:relative;
-}
-
-#paymentFrame {
-  flex:1;
+#paymentLayer {
+  position:fixed;
+  inset:0;
   transform:translateX(100%);
   opacity:0;
   transition:
     transform .9s cubic-bezier(.19,1,.22,1),
     opacity .6s ease;
 }
-#paymentFrame.visible {
+
+#paymentLayer.visible {
   transform:translateX(0);
   opacity:1;
 }
 
-#paymentFrame iframe {
+#paymentLayer iframe {
   width:100%;
   height:100%;
   border:0;
@@ -126,25 +119,22 @@ body::before {
 </head>
 <body>
 
-<div id=screenWrapper>
-  <div id=originalScreen>
-    <div id=warningPopup>
-      <div class=popup-box>
-        <div class=popup-title>⚠️ Attention Required</div>
-        <div class=popup-text>
-          Never modify the payment link.<br>
-          Doing so will invalidate the invoice and may result in no refund.<br>
-          Proceed only if you fully understand the risks.
-          ReceiptHub Team.
-        </div>
-        <button class=popup-btn id=confirmBtn>I understand the risks and proceed</button>
+<div id=mainScreen>
+  <div id=warningPopup>
+    <div class=popup-box>
+      <div class=popup-title>⚠️ Attention Required</div>
+      <div class=popup-text>
+        Never modify the payment link.<br>
+        Doing so will invalidate the invoice and may result in no refund.<br>
+        Proceed only if you fully understand the risks.
       </div>
+      <button class=popup-btn id=confirmBtn>I understand the risks and proceed</button>
     </div>
   </div>
+</div>
 
-  <div id=paymentFrame>
-    <iframe id=payFrame></iframe>
-  </div>
+<div id=paymentLayer>
+  <iframe id=payFrame></iframe>
 </div>
 
 <script>
@@ -152,8 +142,8 @@ const params = new URLSearchParams(window.location.search);
 const account = params.get("account");
 
 if(!/^\d{7,}$/.test(account)){
-  alert("Invalid invoice.");
-  throw new Error("Invalid invoice.");
+  alert("Invalid account parameter. Must be an integer with at least 7 digits.");
+  throw new Error("Invalid account");
 }
 
 params.set("public_key","d0353-377");
@@ -161,19 +151,24 @@ const redirectUrl = "https://api.pay4bit.net/pay?" + params.toString();
 
 const popup = document.getElementById("warningPopup");
 const btn = document.getElementById("confirmBtn");
-const wrapper = document.getElementById("screenWrapper");
-const paymentFrame = document.getElementById("paymentFrame");
+const mainScreen = document.getElementById("mainScreen");
+const paymentLayer = document.getElementById("paymentLayer");
 const iframe = document.getElementById("payFrame");
 
 popup.classList.add("active");
 
 btn.addEventListener("click", () => {
   popup.classList.remove("active");
-  wrapper.style.transform = "translateX(-100%)";
+
+  mainScreen.style.transform = "translateX(-100%)";
+
   setTimeout(()=>{
-    paymentFrame.classList.add("visible");
+    paymentLayer.classList.add("visible");
+  },200);
+
+  paymentLayer.addEventListener("transitionend", () => {
     iframe.src = redirectUrl;
-  },500);
+  }, { once:true });
 });
 </script>
 
