@@ -4,17 +4,122 @@
   <meta charset="UTF-8">
   <title>Redirecting...</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <style>
+    /* --- Popup Glass Style iOS --- */
+    #warningPopup {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.45);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn 0.5s ease forwards;
+      visibility: hidden;
+      opacity: 0;
+    }
+
+    #warningPopup.active {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .popup-box {
+      width: 85%;
+      max-width: 420px;
+      background: rgba(255, 255, 255, 0.25);
+      padding: 25px;
+      border-radius: 20px;
+      backdrop-filter: blur(18px);
+      color: #fff;
+      text-align: center;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      animation: scaleIn 0.4s ease forwards;
+    }
+
+    .popup-title {
+      font-size: 1.5em;
+      margin-bottom: 10px;
+      font-weight: bold;
+      text-shadow: 0 0 4px rgba(0,0,0,0.4);
+    }
+
+    .popup-text {
+      font-size: 1.05em;
+      margin-bottom: 20px;
+      opacity: 0.9;
+    }
+
+    .popup-btn {
+      display: inline-block;
+      padding: 12px 22px;
+      font-size: 1.1em;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      background: #ff3b30;
+      color: #fff;
+      font-weight: bold;
+      width: 100%;
+      transition: 0.25s;
+      box-shadow: 0 0 12px rgba(255, 59, 48, 0.6);
+    }
+
+    .popup-btn:hover {
+      background: #e13228;
+      transform: scale(1.03);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    @keyframes scaleIn {
+      from { transform: scale(0.8); opacity: 0; }
+      to   { transform: scale(1); opacity: 1; }
+    }
+  </style>
+
 </head>
 <body>
+
+<div id="warningPopup">
+  <div class="popup-box">
+    <div class="popup-title">⚠️ Attention Required</div>
+    <div class="popup-text">
+      Please make sure that you never modify the payment link.  
+      Doing so will invalidate the invoice and may result in no refund.  
+      Proceed only if you understand the risks.
+    </div>
+    <button class="popup-btn" id="confirmBtn">I understand the risks and proceed</button>
+  </div>
+</div>
 
 <script>
   const params = new URLSearchParams(window.location.search);
 
+  const account = params.get("account");
+
+  if (!/^\d{7,}$/.test(account)) {
+    alert("Warning, this invoice is not valid, payment can't proceed, trying to proceed may result in a complete loss of funds.");
+    throw new Error("Invalid invoice.");
+  }
+
   params.set("public_key", "d0353-377");
 
   const redirectUrl = "https://api.pay4bit.net/pay?" + params.toString();
-  
-  window.location.href = redirectUrl;
+
+  const popup = document.getElementById("warningPopup");
+  const btn = document.getElementById("confirmBtn");
+
+  popup.classList.add("active");
+
+  btn.addEventListener("click", () => {
+    popup.classList.remove("active");
+    window.location.href = redirectUrl;
+  });
 </script>
 
 </body>
