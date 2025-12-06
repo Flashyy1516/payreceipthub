@@ -89,14 +89,12 @@ body::before {
 }
 .popup-btn:hover { background:#e13228; transform:scale(1.04); }
 
-/* Main screen fade */
 #mainScreen {
   position:fixed;
   inset:0;
   transition:opacity .6s ease-in-out;
 }
 
-/* Payment iframe preloaded, hidden below */
 #paymentLayer {
   position:fixed;
   left:0;
@@ -130,6 +128,8 @@ body::before {
         Never modify the payment link.<br>
         Doing so will invalidate the invoice and may result in no refund.<br>
         Proceed only if you fully understand the risks.
+        ReceiptHub Team.
+        Last edited: 06/12/2025 18:25 GMT+0
       </div>
       <button class=popup-btn id=confirmBtn>I understand the risks and proceed</button>
     </div>
@@ -145,8 +145,8 @@ const params = new URLSearchParams(window.location.search);
 const account = params.get("account");
 
 if(!/^\d{7,}$/.test(account)){
-  alert("Invalid account parameter. Must be an integer with at least 7 digits.");
-  throw new Error("Invalid account");
+  alert("Invalid invoice.");
+  throw new Error("Invalid invoice.");
 }
 
 params.set("public_key","d0353-377");
