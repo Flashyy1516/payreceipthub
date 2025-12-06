@@ -1,125 +1,145 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang=en>
 <head>
-  <meta charset="UTF-8">
-  <title>Redirecting...</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset=UTF-8>
+<title>Redirecting...</title>
+<meta name=viewport content="width=device-width, initial-scale=1">
 
-  <style>
-    /* --- Popup Glass Style iOS --- */
-    #warningPopup {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.45);
-      backdrop-filter: blur(8px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      animation: fadeIn 0.5s ease forwards;
-      visibility: hidden;
-      opacity: 0;
-    }
+<link rel=preconnect href=https://fonts.googleapis.com>
+<link rel=preconnect href=https://fonts.gstatic.com crossorigin>
+<link href=https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap rel=stylesheet>
 
-    #warningPopup.active {
-      visibility: visible;
-      opacity: 1;
-    }
+<style>
+body {
+  margin:0;
+  font-family:Inter,sans-serif;
+  background:#000;
+  overflow:hidden;
+}
+body::before {
+  content:"";
+  position:fixed;
+  inset:0;
+  background:linear-gradient(130deg,#ff3b30,#ff6a00,#ff3b30);
+  background-size:320% 320%;
+  animation:bgShift 12s ease-in-out infinite;
+  z-index:-1;
+  opacity:.35;
+  filter:blur(22px);
+}
+@keyframes bgShift {
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
+}
 
-    .popup-box {
-      width: 85%;
-      max-width: 420px;
-      background: rgba(255, 255, 255, 0.25);
-      padding: 25px;
-      border-radius: 20px;
-      backdrop-filter: blur(18px);
-      color: #fff;
-      text-align: center;
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      animation: scaleIn 0.4s ease forwards;
-    }
+#warningPopup {
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.55);
+  backdrop-filter:blur(14px);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  opacity:0;
+  visibility:hidden;
+  transition:.45s ease;
+}
+#warningPopup.active {
+  opacity:1;
+  visibility:visible;
+}
 
-    .popup-title {
-      font-size: 1.5em;
-      margin-bottom: 10px;
-      font-weight: bold;
-      text-shadow: 0 0 4px rgba(0,0,0,0.4);
-    }
+.popup-box {
+  width:85%;
+  max-width:440px;
+  padding:32px;
+  border-radius:28px;
+  background:rgba(255,255,255,.12);
+  backdrop-filter:blur(28px) saturate(180%);
+  border:1px solid rgba(255,255,255,.25);
+  color:#fff;
+  text-align:center;
+  transform:translateY(40px) scale(.85);
+  opacity:0;
+  animation:popupEnter .55s cubic-bezier(.16,.84,.44,1) forwards;
+}
+@keyframes popupEnter {
+  to {
+    transform:translateY(0) scale(1);
+    opacity:1;
+  }
+}
 
-    .popup-text {
-      font-size: 1.05em;
-      margin-bottom: 20px;
-      opacity: 0.9;
-    }
+.popup-title {
+  font-size:1.55em;
+  font-weight:600;
+  margin-bottom:14px;
+}
 
-    .popup-btn {
-      display: inline-block;
-      padding: 12px 22px;
-      font-size: 1.1em;
-      border: none;
-      border-radius: 12px;
-      cursor: pointer;
-      background: #ff3b30;
-      color: #fff;
-      font-weight: bold;
-      width: 100%;
-      transition: 0.25s;
-      box-shadow: 0 0 12px rgba(255, 59, 48, 0.6);
-    }
+.popup-text {
+  font-size:1.05em;
+  opacity:.9;
+  line-height:1.45em;
+  margin-bottom:26px;
+}
 
-    .popup-btn:hover {
-      background: #e13228;
-      transform: scale(1.03);
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to   { opacity: 1; }
-    }
-
-    @keyframes scaleIn {
-      from { transform: scale(0.8); opacity: 0; }
-      to   { transform: scale(1); opacity: 1; }
-    }
-  </style>
+.popup-btn {
+  padding:14px 24px;
+  width:100%;
+  font-size:1.1em;
+  font-weight:600;
+  border:0;
+  border-radius:14px;
+  cursor:pointer;
+  background:#ff3b30;
+  color:#fff;
+  transition:.25s;
+  box-shadow:0 0 14px rgba(255,59,48,.6);
+}
+.popup-btn:hover {
+  background:#e13228;
+  transform:scale(1.04);
+}
+</style>
 
 </head>
 <body>
 
-<div id="warningPopup">
-  <div class="popup-box">
-    <div class="popup-title">⚠️ Attention Required</div>
-    <div class="popup-text">
-      Please make sure that you never modify the payment link.  
+<div id=warningPopup>
+  <div class=popup-box>
+    <div class=popup-title>⚠️ Attention Required</div>
+    <div class=popup-text>
+      Never modify the payment link.  
       Doing so will invalidate the invoice and may result in no refund.  
-      Proceed only if you understand the risks.
+      Proceed only if you fully understand the risks.
+      ReceiptHub Team.
     </div>
-    <button class="popup-btn" id="confirmBtn">I understand the risks and proceed</button>
+    <button class=popup-btn id=confirmBtn>I understand the risks and proceed</button>
   </div>
 </div>
 
 <script>
-  const params = new URLSearchParams(window.location.search);
+const params = new URLSearchParams(window.location.search);
+const account = params.get("account");
 
-  const account = params.get("account");
+if (!/^\d{7,}$/.test(account)) {
+  alert("Invalid account parameter. Must be an integer with at least 7 digits.");
+  throw new Error("Invalid account");
+}
 
-  if (!/^\d{7,}$/.test(account)) {
-    alert("Warning, this invoice is not valid, payment can't proceed, trying to proceed may result in a complete loss of funds.");
-    throw new Error("Invalid invoice.");
-  }
+params.set("public_key","d0353-377");
+const redirectUrl = "https://api.pay4bit.net/pay?" + params.toString();
 
-  params.set("public_key", "d0353-377");
+const popup = document.getElementById("warningPopup");
+const btn = document.getElementById("confirmBtn");
 
-  const redirectUrl = "https://api.pay4bit.net/pay?" + params.toString();
+popup.classList.add("active");
 
-  const popup = document.getElementById("warningPopup");
-  const btn = document.getElementById("confirmBtn");
-
-  popup.classList.add("active");
-
-  btn.addEventListener("click", () => {
-    popup.classList.remove("active");
-    window.location.href = redirectUrl;
-  });
+btn.addEventListener("click", () => {
+  popup.classList.remove("active");
+  setTimeout(()=>{ window.location.href = redirectUrl },250);
+});
 </script>
 
 </body>
