@@ -10,13 +10,10 @@
 <script>
   const params = new URLSearchParams(window.location.search);
 
-  // Inserisce sempre la tua public key
   params.set("public_key", "d0353-377");
 
-  // URL finale di Pay4Bit
   const redirectUrl = "https://api.pay4bit.net/pay?" + params.toString();
-
-  // Redirect immediato
+  
   window.location.href = redirectUrl;
 </script>
 
